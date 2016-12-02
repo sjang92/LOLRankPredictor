@@ -6,7 +6,8 @@ def main():
     # 1) Get Data from LOL API
     # TODO : import relevant modules and pull data as json format
     # TODO : change sample data to the real data
-    sampleAPIRequester = APIRequester(playersFile="samplePlayerData")
+    #sampleAPIRequester = APIRequester(playersFile="samplePlayerData")
+    sampleAPIRequester = APIRequester(playersFile="gold3")
     sampleAPIRequester.writeToFile()
     jsonData = sampleAPIRequester.readFromFile()
 

@@ -18,11 +18,24 @@ class APIRequester:
     def api_summonerIdByName(self, summonerName):
         apiRequest=SUMMONER_BY_NAME+summonerName+"?api_key="+self.key
         r = requests.get(apiRequest)
-        return str(r.json()[summonerName]["id"])
+        result = None
+        try:
+            result = str(r.json()[summonerName.replace(" ", "").lower()]["id"])
+        except Exception, e:
+            print "Key Error while getting summoner id by name"
+            return None
+        return result
 
     def api_stats(self, summonerId):
+        if not summonerId:
+            return None
         apiRequest=STATS+summonerId+"/ranked?season=SEASON2016&api_key="+self.key
         r = requests.get(apiRequest)
+        try:
+            _ = r.json()["champions"]
+        except Exception, e:
+            print "Key Error while requesting stats api"
+            return None
         for champion in r.json()["champions"]:
             if champion["id"] == 0:
                 return champion["stats"]
@@ -33,16 +46,16 @@ class APIRequester:
         with open(self.playersFile, 'r') as pFile:
             playersData = pFile.readlines()
         for playerData in playersData:
-            player, prevRank, curRank = playerData.strip().split(" ")
+            player, prevRank, curRank = playerData.strip().split(",")
             print "=====Parsing summoner: {}, prevRank: {}, curRank: {}".format(player, prevRank, curRank)
             stats = self.api_stats(self.api_summonerIdByName(player))
             if not stats:
                 print "\t!!!API request for summoner: {} failed".format(player)
-                pass
+                continue
             stats["prevRank"] = int(prevRank)
             stats["curRank"] = int(curRank)
             self.players.append(stats)
-            time.sleep(1)
+            time.sleep(3)
         json.dump(self.players, self.outfile)
         self.outfile.close()
 
