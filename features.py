@@ -1,5 +1,7 @@
 import numpy
 from random import shuffle
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.decomposition import PCA
 
 class featureExtractor():
 
@@ -100,19 +102,12 @@ class featureExtractor():
     """
     Run varianceFiltering to the features.
     By default, if var_threhold is not passed in, it removes features with zero variance.
+    IMORTANT : run this method after adding all features. It will break if we run this first
+    But run this before Cross Validation!!
     """
     def varianceFilter(self, var_threshold=0):
-        return NotImplemented
-        #self.data = VarianceThreshold(threshold=var_threshold).fit_transform(self.data)
-
-    """
-    Function : getFeatureVector
-    Given a json(dictionary) representation of a data, return the vector version
-    whose index corresponds to the index of the feature
-    vector[i] = x[self.features[i]]
-    """
-    def getFeatureVector(self, x):
-        return NotImplemented
+        #return NotImplemented
+        self.data = VarianceThreshold(threshold=var_threshold).fit_transform(self.data)
 
     """
     Function : divideData
