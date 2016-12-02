@@ -59,11 +59,15 @@ def main():
         train_X, train_Y = f_extractor.separateXY(train)
         test_X, test_Y = f_extractor.separateXY(test)
 
-        predictor = Predictor(train_X, train_Y)
-        predictor.setLearner('svm') # only support svm for now
-        predictor.learn()
+        predictor1 = Predictor(train_X, train_Y)
+        predictor1.setLearner('svm', 'ovo') # only support svm for now
+        predictor1.learn()
+        predictor2 = Predictor(train_X, train_Y)
+        predictor2.setLearner('svm', 'ovr') # only support svm for now
+        predictor2.learn()
 
-        print predictor.predictAndGetError(test_X, test_Y)
+        print predictor1.predictAndGetError(test_X, test_Y)
+        print predictor2.predictAndGetError(test_X, test_Y)
 
 if __name__ == "__main__":
     main()

@@ -15,9 +15,9 @@ class Predictor(object):
         self.Y = Y
         self.classifier = None
 
-    def setLearner(self, learner_name):
+    def setLearner(self, learner_name, m_c_strategy):
         if learner_name == 'svm':
-            self.learner = SVC() 
+            self.learner = SVC(decision_function_shape=m_c_strategy) 
 
     def learn(self):
         self.learner.fit(self.X, self.Y)
