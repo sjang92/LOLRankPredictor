@@ -8,7 +8,7 @@ class featureExtractor():
         self.features = raw_features
         self.data = []
         self.num_data = 0
-        self.dimension = len(self.raw_features)
+        self.dimension = len(self.features)
         self.divded_data = []
 
     """
@@ -27,7 +27,7 @@ class featureExtractor():
             y = Y[i]
             new_vector = []
 
-            for feature in self.raw_features:
+            for feature in self.features:
                 new_vector.append(x[feature])
 
             self.data.append((new_vector, y))
@@ -158,7 +158,8 @@ class featureExtractor():
     Function : separate XY
     """
     def separateXY(self, data_vector):
-        X = Y = []
+        X = []
+        Y = []
         for i in range(0, len(data_vector)):
             (x, y) = data_vector[i]
             X.append(x)
