@@ -7,9 +7,11 @@ def main():
     # TODO : import relevant modules and pull data as json format
     # TODO : change sample data to the real data
     #sampleAPIRequester = APIRequester(playersFile="samplePlayerData")
-    sampleAPIRequester = APIRequester(playersFile="gold3")
-    sampleAPIRequester.writeToFile()
+    inputPlayersFile = "platinum5,gold3"
+    sampleAPIRequester = APIRequester(playersFiles=inputPlayersFile)
+    sampleAPIRequester.writeToFiles()
     jsonData = sampleAPIRequester.readFromFile()
+    print jsonData
 
     X = [] #list of dictionaries
     Y = [] #list of values
@@ -29,17 +31,18 @@ def main():
     # 2) Filter and add features
     f_extractor = FeatureExtractor(features)
     f_extractor.feedData(X, Y)
-
+    """
     X, Y = f_extractor.separateXY(f_extractor.data)
     predictor = Predictor(X, Y)
     predictor.setLearner('svm')
     predictor.learn()
     print predictor.predict(X)
+    """
 
     featuresToRemove = [] # list of features to remove. Let's eyeball it
     unaryFeatures = [] #example : ('averagekills', 'newfeaturename', lambda a: math.pow(a, 2))
     binaryFeatures = [] #example : ('averagekills', 'averagedeaths', 'newname',lambda a, b : a*b)
-    """
+
     f_extractor.removeFeatures(featuresToRemove)
 
     for (f_name, new_name, func) in unaryFeatures:
@@ -61,7 +64,6 @@ def main():
         predictor.learn()
 
         print predictor.predictAndGetError(test_X, test_Y)
-    """
 
 if __name__ == "__main__":
     main()
