@@ -14,8 +14,8 @@ class featureExtractor():
     """
     Function : feedData
     feed the list of json(python dict) objects that represent the training data
-    After calling this function, the extractor has access to the train data in 
-    vector format. 
+    After calling this function, the extractor has access to the train data in
+    vector format.
     """
     def feedData(self, X, Y):
         assert len(X) == len(Y), "len of X does not equal len of Y"
@@ -98,7 +98,7 @@ class featureExtractor():
             x.append(func(x[idx_a], x[idx_b]))
         self.dimension += 1
     """
-    Run varianceFiltering to the features. 
+    Run varianceFiltering to the features.
     By default, if var_threhold is not passed in, it removes features with zero variance.
     """
     def varianceFilter(self, var_threshold=0):
@@ -119,7 +119,8 @@ class featureExtractor():
     Divides the entire dataset into num_chunks and store them in separate arrays.
     """
     def divideData(self, num_chunks):
-        rand_indices = shuffle(range(0, self.num_data))
+        rand_indices = [i for i in range(0, self.num_data)]
+        shuffle(rand_indices)
         num_per_chunk = self.num_data / num_chunks
         rand_lists = [rand_indices[i: i+num_per_chunk] for i in xrange(0, self.num_data, num_per_chunk)]
         # distribute left-overs
@@ -141,10 +142,11 @@ class featureExtractor():
 
     """
     def getTrainTestData(self, indices):
-        train = test = []
+        #train = test = []
 
-        test = self.divided_data[idx]
-
+        #test = self.divided_data[idx]
+        train = []
+        test = []
         for i in indices:
             test.extend(self.divided_data[i])
 
