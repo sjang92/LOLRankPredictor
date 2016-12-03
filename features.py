@@ -12,7 +12,6 @@ class featureExtractor():
         self.num_data = 0
         self.dimension = len(self.features)
         self.divded_data = []
-        print self.features
 
     """
     Function : feedData

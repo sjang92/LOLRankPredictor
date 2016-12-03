@@ -84,7 +84,7 @@ class APIRequester:
             for eachReadJson in readJson:
                 mergedJson.append(eachReadJson)
         now = datetime.now
-        mf = open("merged-{}".format(now().strftime('%Y-%m-%d-%H:%M:%S')),'w')
+        mf = open("mergedJson/merged-{}".format(now().strftime('%Y-%m-%d-%H:%M:%S')),'w')
         json.dump(mergedJson, mf)
         mf.close()
         return mergedJson

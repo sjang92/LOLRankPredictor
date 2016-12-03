@@ -17,10 +17,16 @@ def main():
 
     for data in jsonData:
         curRank = data.pop('curRank', None)
+        prevRank = data['prevRank']
+        sign = 0
+        if curRank - prevRank > 0:
+            sign = 1
+        elif prevRank - curRank < 0:
+            sign = -1
         if not curRank: #edge case where the json data is malformed
             pass
         X.append(data)
-        Y.append(curRank)
+        Y.append(sign)
 
     #TODO: Make sure X[0] has all attrs as keys. Else, add a manual list of all feature names
 
@@ -70,7 +76,6 @@ def main():
         predictor3 = Predictor(train_X, train_Y)
         predictor3.setLearner('ada', 'ovo', 'log')
         predictor3.learn()
-
 
         print "SVM > Error Rate: " + str(predictor1.predictAndGetError(test_X, test_Y)) + " / " + str(predictor1.score(test_X, test_Y))
         totalError1 += float(predictor1.predictAndGetError(test_X, test_Y))
