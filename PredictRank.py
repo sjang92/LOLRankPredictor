@@ -11,8 +11,7 @@ def main():
     sampleAPIRequester = APIRequester(playersFiles=inputPlayersFile)
     sampleAPIRequester.writeToFiles()
     jsonData = sampleAPIRequester.readFromFile()
-    print jsonData
-
+ 
     X = [] #list of dictionaries
     Y = [] #list of values
 
@@ -31,25 +30,27 @@ def main():
     # 2) Filter and add features
     f_extractor = FeatureExtractor(features)
     f_extractor.feedData(X, Y)
-    """
-    X, Y = f_extractor.separateXY(f_extractor.data)
-    predictor = Predictor(X, Y)
-    predictor.setLearner('svm')
-    predictor.learn()
-    print predictor.predict(X)
-    """
 
-    featuresToRemove = [] # list of features to remove. Let's eyeball it
+    div_attrs = ['totalPhysicalDamageDealt', 'totalTurretsKilled', 'totalAssists', 'totalDamageDealt', 'killingSpree', 'totalPentaKills', 'totalDoubleKills', 'totalDeathsPerSession', 'totalSessionsWon', 'totalGoldEarned', 'totalTripleKills', 'totalNeutralMinionsKilled', 'totalChampionKills', 'totalMinionKills', 'totalMagicDamageDealt', 'totalHeal', 'totalQuadraKills', 'totalDamageTaken', 'totalFirstBlood']
+    b = 'totalSessionsPlayed'
+    def getAvg(a, b):
+        return float(a)/b
+
     unaryFeatures = [] #example : ('averagekills', 'newfeaturename', lambda a: math.pow(a, 2))
-    binaryFeatures = [] #example : ('averagekills', 'averagedeaths', 'newname',lambda a, b : a*b)
 
-    f_extractor.removeFeatures(featuresToRemove)
+    binaryFeatures = [(attr, b, 'avg-'+attr, getAvg) for attr in div_attrs] #example : ('averagekills', 'averagedeaths', 'newname',lambda a, b : a*b)
+    featuresToRemove = ['rankedPremadeGamesPlayed', 'mostSpellsCast', 'maxLargestCriticalStrike', 'rankedSoloGamesPlayed', 'normalGamesPlayed', 'botGamesPlayed', 'totalUnrealKills'] # list of features to remove. Let's eyeball it
+    featuresToRemove.extend(div_attrs)
+
+
 
     for (f_name, new_name, func) in unaryFeatures:
         f_extractor.addUnaryFeature(f_name, new_name, func)
 
     for (f1, f2, new_name, func) in binaryFeatures:
         f_extractor.addCrossFeature(f1, f2, new_name, func)
+
+    f_extractor.removeFeatures(featuresToRemove)
 
     # 3) Cross Validate : 9 to 1
     f_extractor.divideData(10) # divide into 10 chunks
@@ -60,14 +61,19 @@ def main():
         test_X, test_Y = f_extractor.separateXY(test)
 
         predictor1 = Predictor(train_X, train_Y)
-        predictor1.setLearner('svm', 'ovo') # only support svm for now
+        predictor1.setLearner('svm', 'ovo', None) # only support svm for now
         predictor1.learn()
-        predictor2 = Predictor(train_X, train_Y)
-        predictor2.setLearner('svm', 'ovr') # only support svm for now
-        predictor2.learn()
+        #predictor2 = Predictor(train_X, train_Y)
+        #predictor2.setLearner('svm', 'ovr', None) # only support svm for now
+        #predictor2.learn()
+        predictor3 = Predictor(train_X, train_Y)
+        predictor3.setLearner('ada', 'ovo', 'log')
+        predictor3.learn()
 
-        print predictor1.predictAndGetError(test_X, test_Y)
-        print predictor2.predictAndGetError(test_X, test_Y)
+        print "Error Rate: " + str(predictor1.predictAndGetError(test_X, test_Y)) + " / " + str(predictor1.score(test_X, test_Y))
+        
+        #print predictor2.predictAndGetError(test_X, test_Y)
+        #print predictor3.predictAndGetError(test_X, test_Y)
 
 if __name__ == "__main__":
     main()

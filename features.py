@@ -12,6 +12,7 @@ class featureExtractor():
         self.num_data = 0
         self.dimension = len(self.features)
         self.divded_data = []
+        print self.features
 
     """
     Function : feedData
@@ -89,7 +90,7 @@ class featureExtractor():
     of the two. Pass in lambda
     """
     def addCrossFeature(self, feature_a, feature_b, new_feature, func):
-        assert feature_a in self.features and feature_b in self.features, "such features do not exist"
+        assert feature_a in self.features and feature_b in self.features, feature_a+","+feature_b+"such features do not exist"
 
         idx_a = self.features.index(feature_a)
         idx_b = self.features.index(feature_b)
@@ -107,7 +108,13 @@ class featureExtractor():
     """
     def varianceFilter(self, var_threshold=0):
         #return NotImplemented
-        self.data = VarianceThreshold(threshold=var_threshold).fit_transform(self.data)
+        X, Y = self.separateXY(self.data)
+        VarianceThreshold(threshold=var_threshold).fit_transform(X)
+        for i in range(0, self.num_data):
+            x = X[i]
+            y = Y[i]
+
+            self.data.append((x, y))
 
     """
     Function : divideData
