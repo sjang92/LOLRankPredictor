@@ -22,6 +22,7 @@ class Predictor(object):
             self.learner = AdaBoostClassifier(n_estimators=57)
             self.learner.classes = [i for i in range(1, 26)]
             self.learner.n_classes = 25
+
     def learn(self):
         self.learner.fit(self.X, self.Y)
 
