@@ -37,14 +37,20 @@ def main():
     f_extractor = FeatureExtractor(features)
     f_extractor.feedData(X, Y)
 
-    div_attrs = ['totalPhysicalDamageDealt', 'totalTurretsKilled', 'totalAssists', 'totalDamageDealt', 'killingSpree', 'totalPentaKills', 'totalDoubleKills', 'totalDeathsPerSession', 'totalSessionsWon', 'totalGoldEarned', 'totalTripleKills', 'totalNeutralMinionsKilled', 'totalChampionKills', 'totalMinionKills', 'totalMagicDamageDealt', 'totalHeal', 'totalQuadraKills', 'totalDamageTaken', 'totalFirstBlood']
+    f_extractor.removeSingleFeature('totalHeal')
+
+    div_attrs = ['totalPhysicalDamageDealt', 'totalTurretsKilled', 'totalAssists', 'totalDamageDealt', 'killingSpree', 'totalPentaKills', 'totalDoubleKills', 'totalDeathsPerSession', 'totalSessionsWon', 'totalGoldEarned', 'totalTripleKills', 'totalNeutralMinionsKilled', 'totalChampionKills', 'totalMinionKills', 'totalMagicDamageDealt', 'totalQuadraKills', 'totalDamageTaken', 'totalFirstBlood']
     b = 'totalSessionsPlayed'
     def getAvg(a, b):
         return float(a)/b
 
-    unaryFeatures = [] #example : ('averagekills', 'newfeaturename', lambda a: math.pow(a, 2))
+    def getInverse(a):
+        return 1/a
+
+    unaryFeatures = [('totalDeathsPerSession', 'inverseDeath', getInverse)] #example : ('averagekills', 'newfeaturename', lambda a: math.pow(a, 2))
 
     binaryFeatures = [(attr, b, 'avg-'+attr, getAvg) for attr in div_attrs] #example : ('averagekills', 'averagedeaths', 'newname',lambda a, b : a*b)
+    binaryFeatures.append(('avg-totalChampionKills', 'totalDeathsPerSession', 'kill-death-ratio', getAvg))
     featuresToRemove = ['rankedPremadeGamesPlayed', 'mostSpellsCast', 'maxLargestCriticalStrike', 'rankedSoloGamesPlayed', 'normalGamesPlayed', 'botGamesPlayed', 'totalUnrealKills'] # list of features to remove. Let's eyeball it
     featuresToRemove.extend(div_attrs)
 

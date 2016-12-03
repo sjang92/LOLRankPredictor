@@ -31,15 +31,25 @@ def main():
     f_extractor = FeatureExtractor(features)
     f_extractor.feedData(X, Y)
 
-    div_attrs = ['totalPhysicalDamageDealt', 'totalTurretsKilled', 'totalAssists', 'totalDamageDealt', 'killingSpree', 'totalPentaKills', 'totalDoubleKills', 'totalDeathsPerSession', 'totalSessionsWon', 'totalGoldEarned', 'totalTripleKills', 'totalNeutralMinionsKilled', 'totalChampionKills', 'totalMinionKills', 'totalMagicDamageDealt', 'totalHeal', 'totalQuadraKills', 'totalDamageTaken', 'totalFirstBlood']
+    f_extractor.removeSingleFeature('totalHeal')
+
+    div_attrs = ['totalPhysicalDamageDealt', 'totalTurretsKilled', 'totalAssists', 'totalDamageDealt', 'killingSpree', 'totalPentaKills', 'totalDoubleKills', 'totalSessionsWon', 'totalGoldEarned', 'totalTripleKills', 'totalNeutralMinionsKilled', 'totalChampionKills', 'totalMinionKills', 'totalMagicDamageDealt', 'totalQuadraKills', 'totalDamageTaken', 'totalFirstBlood']
     b = 'totalSessionsPlayed'
+
     def getAvg(a, b):
         return float(a)/b
 
-    unaryFeatures = [] #example : ('averagekills', 'newfeaturename', lambda a: math.pow(a, 2))
+    def getInverse(a):
+        return 1/a
+
+    unaryFeatures = [('totalDeathsPerSession', 'inverseDeath', getInverse)] #example : ('averagekills', 'newfeaturename', lambda a: math.pow(a, 2))
 
     binaryFeatures = [(attr, b, 'avg-'+attr, getAvg) for attr in div_attrs] #example : ('averagekills', 'averagedeaths', 'newname',lambda a, b : a*b)
-    featuresToRemove = ['rankedPremadeGamesPlayed', 'mostSpellsCast', 'maxLargestCriticalStrike', 'rankedSoloGamesPlayed', 'normalGamesPlayed', 'botGamesPlayed', 'totalUnrealKills'] # list of features to remove. Let's eyeball it
+
+    binaryFeatures.append(('avg-totalChampionKills', 'totalDeathsPerSession', 'kill-death-ratio', getAvg))
+
+
+    featuresToRemove = ['rankedPremadeGamesPlayed', 'mostSpellsCast', 'maxLargestCriticalStrike', 'rankedSoloGamesPlayed', 'normalGamesPlayed', 'botGamesPlayed', 'totalUnrealKills', 'totalSessionsLost', 'totalDeathsPerSession'] # list of features to remove. Let's eyeball it
     featuresToRemove.extend(div_attrs)
 
 
@@ -55,7 +65,7 @@ def main():
     # 3) Cross Validate : 9 to 1
     f_extractor.divideData(10) # divide into 10 chunks
 
-    totalError1, totalError3 = 0.0, 0.0
+    totalError1, totalError2, totalError3 = 0.0, 0.0, 0.0
     for i in range(0, 10):
         train, test = f_extractor.getTrainTestData([i])
         train_X, train_Y = f_extractor.separateXY(train)
@@ -64,9 +74,9 @@ def main():
         predictor1 = Predictor(train_X, train_Y)
         predictor1.setLearner('svm', 'ovo', None) # only support svm for now
         predictor1.learn()
-        #predictor2 = Predictor(train_X, train_Y)
-        #predictor2.setLearner('svm', 'ovr', None) # only support svm for now
-        #predictor2.learn()
+        predictor2 = Predictor(train_X, train_Y)
+        predictor2.setLearner('svr', 'ovr', None) # only support svm for now
+        predictor2.learn()
         predictor3 = Predictor(train_X, train_Y)
         predictor3.setLearner('ada', 'ovo', 'log')
         predictor3.learn()
@@ -75,10 +85,13 @@ def main():
         print "SVM > Error Rate: " + str(predictor1.predictAndGetError(test_X, test_Y)) + " / " + str(predictor1.score(test_X, test_Y))
         totalError1 += float(predictor1.predictAndGetError(test_X, test_Y))
         #print predictor2.predictAndGetError(test_X, test_Y)
+        print "SVR > Error Rate: " + str(predictor2.predictAndGetError(test_X, test_Y))
+        totalError2 += float(predictor2.predictAndGetError(test_X, test_Y))
         print "Boosting > Error Rate: " + str(predictor3.predictAndGetError(test_X, test_Y)) + " / " + str(predictor3.score(test_X, test_Y))
         totalError3 += float(predictor3.predictAndGetError(test_X, test_Y))
 
     print "Average Error for SVM > {}".format(str(totalError1/float(10)))
+    print "Average Error for SVR > {}".format(str(totalError2/float(10)))
     print "Average Error for Boosting > {}".format(str(totalError3/float(10)))
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 from sklearn.svm import SVC
+from sklearn.svm import SVR
 from sklearn.ensemble import AdaBoostClassifier
 
 """
@@ -14,6 +15,7 @@ class Predictor(object):
         self.X = X
         self.Y = Y
         self.classifier = None
+        self.learner_name = None
 
     def setLearner(self, learner_name, m_c_strategy, loss):
         if learner_name == 'svm':
@@ -22,6 +24,10 @@ class Predictor(object):
             self.learner = AdaBoostClassifier(n_estimators=57)
             self.learner.classes = [i for i in range(1, 26)]
             self.learner.n_classes = 25
+        elif learner_name == 'svr':
+            self.learner = SVR()
+
+        self.learner_name = learner_name
 
     def learn(self):
         self.learner.fit(self.X, self.Y)
@@ -34,6 +40,9 @@ class Predictor(object):
 
     def predictAndGetError(self, testX, trueY):
         pred_y = self.predict(testX)
+
+        if self.learner_name == 'svr':
+            pred_y = [max(min(int(round(y)), 25), 1) for y in pred_y]
         count = 0
         total_count = len(testX)
 
