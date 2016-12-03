@@ -7,6 +7,7 @@ def main():
     # TODO : import relevant modules and pull data as json format
     # TODO : change sample data to the real data
     #sampleAPIRequester = APIRequester(playersFile="samplePlayerData")
+    inputPlayersFile = "platinum4,platinum5,gold3,gold4,gold5,diamond1,diamond2,diamond3,diamond4,diamond5,silver1,silver2,silver5"
     inputPlayersFile = "platinum5,gold3,diamond1,diamond2,diamond3,diamond4,diamond5,silver5"
     sampleAPIRequester = APIRequester(playersFiles=inputPlayersFile)
     sampleAPIRequester.writeToFiles()
@@ -64,6 +65,8 @@ def main():
 
     # 3) Cross Validate : 9 to 1
     f_extractor.divideData(10) # divide into 10 chunks
+
+    print "# of Total Data: {}\n".format(str(len(X)))
 
     totalError1, totalError2, totalError3 = 0.0, 0.0, 0.0
     for i in range(0, 10):

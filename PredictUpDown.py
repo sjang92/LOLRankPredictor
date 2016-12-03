@@ -7,6 +7,7 @@ def main():
     # TODO : import relevant modules and pull data as json format
     # TODO : change sample data to the real data
     #sampleAPIRequester = APIRequester(playersFile="samplePlayerData")
+    inputPlayersFile = "platinum4,platinum5,gold3,gold4,gold5,diamond1,diamond2,diamond3,diamond4,diamond5,silver1,silver2,silver5"
     inputPlayersFile = "platinum5,gold3,diamond1,diamond2,diamond3,diamond4,diamond5,silver5"
     sampleAPIRequester = APIRequester(playersFiles=inputPlayersFile)
     sampleAPIRequester.writeToFiles()
