@@ -55,8 +55,7 @@ def main():
     featuresToRemove = ['rankedPremadeGamesPlayed', 'mostSpellsCast', 'maxLargestCriticalStrike', 'rankedSoloGamesPlayed', 'normalGamesPlayed', 'botGamesPlayed', 'totalUnrealKills'] # list of features to remove. Let's eyeball it
     featuresToRemove.extend(div_attrs)
 
-
-
+    '''
     for (f_name, new_name, func) in unaryFeatures:
         f_extractor.addUnaryFeature(f_name, new_name, func)
 
@@ -64,6 +63,7 @@ def main():
         f_extractor.addCrossFeature(f1, f2, new_name, func)
 
     f_extractor.removeFeatures(featuresToRemove)
+    '''
 
     # 3) Cross Validate : 9 to 1
     f_extractor.divideData(10) # divide into 10 chunks
