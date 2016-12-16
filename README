@@ -1,7 +1,7 @@
 Directory Structure:
-Please unzip the data.zip at the same directory with the code directory.
-Then, move all the contents in data.zip to the code directory and remove the data directory.
-Your directoy view should look something like this:
+Please unzip data.zip file.
+Then, move all the contents in unzipped data directory to the code directory(unzipped code.zip) and remove(or just disregard) the data directory.
+Your code directoy should look something like this:
 .
 ├── Platinum4
 ├── PredictRank.py
@@ -39,4 +39,4 @@ Brief code structure:
 features.py and rank_Predictor.py are classes for feature extractor and predictors respectively.
 They are used in PredictRank.py and PredictUpDown.py to predict exact rank of the users and whether the users' rank go up, down, or stay.
 statsApi.py is a helper class that contains all the functionalities regarding Riot API usage to gather user info and match history.
-Finally, run.sh folder is a simple bash script tat runs both PredictRank.py and PredictUpDown.py consecutively.
+Finally, run.sh folder is a simple bash script that runs both PredictRank.py and PredictUpDown.py consecutively.
